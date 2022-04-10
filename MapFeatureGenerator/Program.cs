@@ -103,6 +103,6 @@ public static class Program
             };
 
             return result;
-        }).SaveGeoJson(arguments!.OutputFilePath! + ".json", 20);
+        }).Save(arguments!.OutputFilePath!);
     }
 }

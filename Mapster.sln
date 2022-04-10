@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapFeatureGenerator", "MapF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{879E9A66-D9CF-48C9-A7C0-E555B084033C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TileRenderer", "TileRenderer\TileRenderer.csproj", "{C5D91A36-DFD7-4E90-BF51-BD4D23A6E929}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTileRenderer", "Tests\TestTileRenderer\TestTileRenderer.csproj", "{C4D4BD9A-56A5-49A7-B343-4FAF93AD19EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
@@ -30,5 +34,13 @@ Global
 		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Release|x64.Build.0 = Release|Any CPU
 		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Debug|x64.Build.0 = Debug|Any CPU
+		{C5D91A36-DFD7-4E90-BF51-BD4D23A6E929}.Release|x64.ActiveCfg = Release|Any CPU
+		{C5D91A36-DFD7-4E90-BF51-BD4D23A6E929}.Release|x64.Build.0 = Release|Any CPU
+		{C5D91A36-DFD7-4E90-BF51-BD4D23A6E929}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C5D91A36-DFD7-4E90-BF51-BD4D23A6E929}.Debug|x64.Build.0 = Debug|Any CPU
+		{C4D4BD9A-56A5-49A7-B343-4FAF93AD19EA}.Release|x64.ActiveCfg = Release|Any CPU
+		{C4D4BD9A-56A5-49A7-B343-4FAF93AD19EA}.Release|x64.Build.0 = Release|Any CPU
+		{C4D4BD9A-56A5-49A7-B343-4FAF93AD19EA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C4D4BD9A-56A5-49A7-B343-4FAF93AD19EA}.Debug|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
