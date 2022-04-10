@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OSMDataParser", "OSMDataPar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestOSMDataReader", "Tests\TestOSMDataReader\TestOSMDataReader.csproj", "{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapFeatureGenerator", "MapFeatureGenerator\MapFeatureGenerator.csproj", "{DB266089-F38A-4B06-8F17-94DE80FCC37C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{879E9A66-D9CF-48C9-A7C0-E555B084033C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
@@ -14,9 +18,17 @@ Global
 		{F06C3792-B8B8-4665-9178-F76104963095}.Debug|x64.Build.0 = Debug|x64
 		{F06C3792-B8B8-4665-9178-F76104963095}.Release|x64.ActiveCfg = Release|x64
 		{F06C3792-B8B8-4665-9178-F76104963095}.Release|x64.Build.0 = Release|x64
-		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Release|x64.ActiveCfg = Release|Any CPU
-		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Release|x64.Build.0 = Release|Any CPU
-		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Debug|x64.Build.0 = Debug|Any CPU
+		{DB266089-F38A-4B06-8F17-94DE80FCC37C}.Debug|x64.ActiveCfg = Debug|x64
+		{DB266089-F38A-4B06-8F17-94DE80FCC37C}.Debug|x64.Build.0 = Debug|x64
+		{DB266089-F38A-4B06-8F17-94DE80FCC37C}.Release|x64.ActiveCfg = Release|x64
+		{DB266089-F38A-4B06-8F17-94DE80FCC37C}.Release|x64.Build.0 = Release|x64
+		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Debug|x64.ActiveCfg = Debug|x64
+		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Debug|x64.Build.0 = Debug|x64
+		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Release|x64.ActiveCfg = Release|x64
+		{FA7371E2-D1E8-4C4B-8AC0-00F9FB79E173}.Release|x64.Build.0 = Release|x64
+		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Release|x64.ActiveCfg = Release|Any CPU
+		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Release|x64.Build.0 = Release|Any CPU
+		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{879E9A66-D9CF-48C9-A7C0-E555B084033C}.Debug|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -11,9 +11,9 @@ public class PBFFile : IEnumerable<Blob>
     private bool _disposedValue = false;
     private MemoryMappedFile _mmapFile;
 
-    public PBFFile(string filePath)
+    public PBFFile(ReadOnlySpan<char> filePath)
     {
-        _mmapFile = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open);
+        _mmapFile = MemoryMappedFile.CreateFromFile(filePath.ToString(), FileMode.Open);
     }
 
     public IEnumerator<Blob> GetEnumerator()
