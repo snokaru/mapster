@@ -39,7 +39,7 @@ public class TestTileRenderer
             {
                 var featureId = reader.ReadInt64();
                 var featureLabel = reader.ReadString();
-                var featureType = (MapFeature.GeometryType) reader.ReadByte();
+                var featureType = (MapFeature.GeometryType)reader.ReadByte();
                 var coordinates = new Coordinate[reader.ReadInt32()];
                 for (int j = 0; j < coordinates.Length; ++j)
                 {
@@ -68,7 +68,7 @@ public class TestTileRenderer
 
         return result;
     }
-    
+
     private static MapFeature[] GetCoordinates(string path)
     {
         // Open the coordinates file for reading
@@ -85,14 +85,14 @@ public class TestTileRenderer
             // Read the line and split it by the <TAB> character
             var line = reader.ReadLine()!.Split('\t');
             // Create a new coordinate instance and add it to the result list
-            var c = new Coordinate(double.Parse(line[1]),double.Parse(line[2]));
+            var c = new Coordinate(double.Parse(line[1]), double.Parse(line[2]));
             resultCoordinates.Add(c);
         }
 
         // Return the two lists as a tuple of arrays
-        return new MapFeature[] {new MapFeature() {Type = MapFeature.GeometryType.Polygon, Coordinates = resultCoordinates.ToArray() }};
+        return new MapFeature[] { new MapFeature() { Type = MapFeature.GeometryType.Polygon, Coordinates = resultCoordinates.ToArray() } };
     }
-    
+
     [TestMethod]
     public void TestRendering()
     {

@@ -127,7 +127,7 @@ public static class MapFeatureExtensions
                     {
                         writer.WriteLine("[");
                     }
-                    
+
                     bool isFirstCoordinate = true;
                     foreach (var coordinate in feature.Coordinates)
                     {

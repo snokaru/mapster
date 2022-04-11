@@ -12,7 +12,7 @@ public static class TileRenderer
     public static Image<Rgba32> Render(this KeyValuePair<int, MapFeature[]> tile, int width, int height)
     {
         var shapes = new Pixel[tile.Value.Length][];
-        
+
         var minX = float.MaxValue;
         var maxX = float.MinValue;
         var minY = float.MaxValue;
@@ -38,20 +38,20 @@ public static class TileRenderer
             {
                 shapes[i][j].X = shapes[i][j].X - minX;
                 shapes[i][j].Y = shapes[i][j].Y - minY;
-                
+
                 maxX = Math.Max(maxX, shapes[i][j].X);
                 maxY = Math.Max(maxY, shapes[i][j].Y);
             }
         }
-        
+
         var canvas = new Image<Rgba32>(width, height);
-        
+
         // Calculate the scale for each pixel, essentially applying a normalization
         var scaleX = canvas.Width / maxX;
         var scaleY = canvas.Height / maxY;
         var scale = Math.Min(scaleX, scaleY);
 
-        for (int i = 0 ; i < shapes.Length; ++i)
+        for (int i = 0; i < shapes.Length; ++i)
         {
             var shape = shapes[i];
             var points = shape.Select(p => new PointF(p.X * scale, canvas.Height - p.Y * scale)).ToArray();
@@ -59,12 +59,12 @@ public static class TileRenderer
             {
                 continue;
             }
-            
+
             // Build out the path that describes our polygon
             var outline = new PathBuilder();
             // Apply a scaling transformation to each pixel by using the .Select() LINQ extension method (equivalent to map() in JS or Rust)
             outline.AddLines(points);
-            
+
             // Render the polygon to the canvas
             canvas.Mutate(context =>
             {

@@ -16,7 +16,7 @@ public readonly struct Coordinate : IEquatable<Coordinate>
         return Math.Abs(Latitude - other.Latitude) < double.Epsilon &&
                Math.Abs(Longitude - other.Longitude) < double.Epsilon;
     }
-    
+
     public override bool Equals(object? obj)
     {
         return obj is Coordinate other && Equals(other);
@@ -31,7 +31,7 @@ public readonly struct Coordinate : IEquatable<Coordinate>
     {
         return !(self == other);
     }
-    
+
     public override int GetHashCode()
     {
         return HashCode.Combine(Latitude, Longitude);
