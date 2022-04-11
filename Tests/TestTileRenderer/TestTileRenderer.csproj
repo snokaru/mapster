@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\TileRenderer\TileRenderer.csproj" />
+      <ProjectReference Include="..\..\Rendering\TileRenderer\TileRenderer.csproj" />
     </ItemGroup>
 
     <ItemGroup>

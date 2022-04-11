@@ -77,7 +77,7 @@ public static class Program
         }
 
         var mapData = LoadOSMFile(arguments!.OsmPbfFilePath);
-        mapData.Ways.Select(way =>
+        var features = mapData.Ways.Select(way =>
         {
             var result = new MapFeature()
             {
@@ -96,13 +96,14 @@ public static class Program
             {
                 result.Type = MapFeature.GeometryType.Polygon;
             }
-            
+
             if (result.Properties.TryGetValue("name", out var value))
             {
                 result.Label = string.IsNullOrWhiteSpace(value) ? string.Empty : value;
             };
 
             return result;
-        }).Save(arguments!.OutputFilePath!);
+        });
+        features.Save(arguments!.OutputFilePath!);
     }
 }

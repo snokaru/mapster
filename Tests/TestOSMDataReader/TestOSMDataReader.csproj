@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\OSMDataParser\OSMDataParser.csproj" />
+      <ProjectReference Include="..\..\DataPipeline\OSMDataParser\OSMDataParser.csproj" />
     </ItemGroup>
 
     <ItemGroup>
