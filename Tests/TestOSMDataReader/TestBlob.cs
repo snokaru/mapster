@@ -16,7 +16,7 @@ public class TestBlob
         var nodes = new ConcurrentDictionary<long, AbstractNode>();
         var ways = new ConcurrentBag<Way>();
 
-        Parallel.ForEach(new PBFFile("MapData/andorra-10032022.osm.pbf"), (blob, loopState) =>
+        foreach (var blob in new PBFFile("MapData/andorra-10032022.osm.pbf"))
         {
             switch (blob.Type)
             {
@@ -45,7 +45,7 @@ public class TestBlob
                         break;
                     }
             }
-        });
+        }
 
         foreach (var way in ways)
         {

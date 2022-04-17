@@ -5,6 +5,10 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <Configurations>Release;Debug</Configurations>
+
+        <Platforms>x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\OSMDataParser\OSMDataParser.csproj" />
+      <ProjectReference Include="..\..\DataPipeline\OSMDataParser\OSMDataParser.csproj" />
     </ItemGroup>
 
     <ItemGroup>

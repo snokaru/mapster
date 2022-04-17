@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Mapster.Common</AssemblyName>
+        <RootNamespace>Mapster.Common</RootNamespace>
+        <Platforms>x64</Platforms>
+    </PropertyGroup>
+
+</Project>
