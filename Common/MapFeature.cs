@@ -1,3 +1,5 @@
+using Mapster.Common.MemoryMappedTypes;
+
 namespace Mapster.Common;
 
 public struct MapFeature
@@ -7,12 +9,7 @@ public struct MapFeature
         "motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential", "road"
     };
 
-    public enum GeometryType : byte
-    {
-        Polyline,
-        Polygon,
-        Point,
-    }
+    
 
     public long Id { get; set; }
     public string Label { get; set; }

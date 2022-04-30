@@ -1,3 +1,5 @@
+using Mapster.Common.MemoryMappedTypes;
+
 namespace Mapster.Common;
 
 public static class TiligSystem
