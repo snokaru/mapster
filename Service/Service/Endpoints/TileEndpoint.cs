@@ -2,12 +2,16 @@ using Mapster.Common;
 using Mapster.Rendering;
 using SixLabors.ImageSharp;
 using Newtonsoft.Json.Bson;
+using System.IO.MemoryMappedFiles;
 
 namespace Mapster.Service.Endpoints;
 
-internal class TileEndpoint
+internal class TileEndpoint : IDisposable
 {
-    Dictionary<int, MapFeature[]> _tileSet = new Dictionary<int, MapFeature[]>();
+    private bool _disposedValue;
+    private List<MemoryMappedFile> _mmappedFiles = new List<MemoryMappedFile>();
+
+    Dictionary<int, (long, MemoryMappedFile)> _tileSet = new Dictionary<int, (long, MemoryMappedFile)>();
 
     public TileEndpoint(string mapDataPath)
     {
@@ -29,9 +33,9 @@ internal class TileEndpoint
                 size = 800;
             }
 
-            var tileIds = TiligSystem.GetTilesForBoundingBox(minLat, minLon, maxLat, maxLon);
+            var tileIds = TiligSystem.GetTilesForBoundingBox(minLat,
+minLon, maxLat, maxLon);
 
-            var dummyStream = new MemoryStream();
             context.Response.ContentType = "application/bson";
             await tileEndpoint.SerializeBson(context.Response.BodyWriter.AsStream(), tileIds, size.Value);
         }
@@ -67,11 +71,7 @@ internal class TileEndpoint
 
     private async Task RenderPng(Stream outputStream, int tileId, int width, int height)
     {
-        KeyValuePair<int, MapFeature[]> tileData = new KeyValuePair<int, MapFeature[]>(tileId, new MapFeature[0]);
-        if (_tileSet.TryGetValue(tileId, out var features))
-        {
-            tileData = new KeyValuePair<int, MapFeature[]>(tileId, features);
-        }
+        var tileData = new KeyValuePair<int, MapFeature[]>(tileId, ExtractMapFeatures(tileId));
 
         var canvas = await Task.Run(() =>
         {
@@ -81,57 +81,91 @@ internal class TileEndpoint
         await canvas.SaveAsPngAsync(outputStream);
     }
 
-    private static Dictionary<int, MapFeature[]> LoadBinaryData(string path, Dictionary<int, MapFeature[]> result)
+    private MapFeature[] ExtractMapFeatures(int tileId)
     {
-        using var stream = File.OpenRead(path);
+        if (!_tileSet.TryGetValue(tileId, out var featureData))
+        {
+            return new MapFeature[0];
+        }
+
+        var (offset, file) = featureData;
+        using var stream = file.CreateViewStream();
+
+        stream.Position = offset;
+        using var reader = new BinaryReader(stream);
+
+        var featureCount = reader.ReadInt32();
+        var features = new MapFeature[featureCount];
+
+        for (int i = 0; i < featureCount; ++i)
+        {
+            var featureId = reader.ReadInt64();
+            var featureLabel = reader.ReadString();
+            var featureType = (MapFeature.GeometryType)reader.ReadByte();
+            var coordinates = new Coordinate[reader.ReadInt32()];
+            for (int j = 0; j < coordinates.Length; ++j)
+            {
+                coordinates[j] = new Coordinate(reader.ReadDouble(), reader.ReadDouble());
+            }
+
+            var propertyCount = reader.ReadInt32();
+            var properties = new Dictionary<string, string>(propertyCount);
+            for (int j = 0; j < propertyCount; ++j)
+            {
+                properties[reader.ReadString()] = reader.ReadString();
+            }
+
+            features[i] = new MapFeature()
+            {
+                Id = featureId,
+                Label = featureLabel,
+                Type = featureType,
+                Coordinates = coordinates,
+                Properties = properties,
+            };
+        }
+
+        return features;
+    }
+
+    private Dictionary<int, (long, MemoryMappedFile)> LoadBinaryData(string path, Dictionary<int, (long, MemoryMappedFile)> result)
+    {
+        var mmappedFile = MemoryMappedFile.CreateFromFile(path, FileMode.Open);
+        _mmappedFiles.Add(mmappedFile);
+
+        using var stream = mmappedFile.CreateViewStream();
         using var reader = new BinaryReader(stream);
 
         var tileCount = reader.ReadInt32();
 
-        var tileOffsets = new (int tileId, long offset)[tileCount];
         for (int i = 0; i < tileCount; ++i)
         {
-            tileOffsets[i] = (reader.ReadInt32(), reader.ReadInt64());
-        }
-
-        foreach (var (tileId, offset) in tileOffsets)
-        {
-            stream.Position = offset;
-
-            var featureCount = reader.ReadInt32();
-            var features = new MapFeature[featureCount];
-
-            for (int i = 0; i < featureCount; ++i)
-            {
-                var featureId = reader.ReadInt64();
-                var featureLabel = reader.ReadString();
-                var featureType = (MapFeature.GeometryType)reader.ReadByte();
-                var coordinates = new Coordinate[reader.ReadInt32()];
-                for (int j = 0; j < coordinates.Length; ++j)
-                {
-                    coordinates[j] = new Coordinate(reader.ReadDouble(), reader.ReadDouble());
-                }
-
-                var propertyCount = reader.ReadInt32();
-                var properties = new Dictionary<string, string>(propertyCount);
-                for (int j = 0; j < propertyCount; ++j)
-                {
-                    properties[reader.ReadString()] = reader.ReadString();
-                }
-
-                features[i] = new MapFeature()
-                {
-                    Id = featureId,
-                    Label = featureLabel,
-                    Type = featureType,
-                    Coordinates = coordinates,
-                    Properties = properties,
-                };
-            }
-
-            result[tileId] = features;
+            result[reader.ReadInt32()] = (reader.ReadInt64(), mmappedFile);
         }
 
         return result;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                foreach (var mmapFile in _mmappedFiles)
+                {
+                    mmapFile.Dispose();
+                }
+            }
+
+            _disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
