@@ -1,8 +1,9 @@
-using Mapster.Common;
+using Mapster.Common.MemoryMappedTypes;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
+using MapFeature = Mapster.Common.MemoryMappedTypes.MapFeature;
 
 namespace Mapster.Rendering;
 
@@ -43,16 +44,16 @@ public struct GeoFeature : BaseShape
                 case GeoFeatureType.Residential:
                     return 41;
             }
+
             return 7;
         }
-        set
-        {
-
-        }
+        set { }
     }
+
     public bool IsPolygon { get; set; }
     public PointF[] ScreenCoordinates { get; set; }
     public GeoFeatureType Type { get; set; }
+
     public void Render(IImageProcessingContext context)
     {
         var color = Color.Magenta;
@@ -83,6 +84,7 @@ public struct GeoFeature : BaseShape
                 color = Color.LightCoral;
                 break;
         }
+
         if (!IsPolygon)
         {
             var pen = new Pen(color, 1.2f);
@@ -100,54 +102,41 @@ public struct GeoFeature : BaseShape
         Type = type;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 
     public GeoFeature(Coordinate[] c, MapFeature feature)
     {
-        IsPolygon = feature.Type == MapFeature.GeometryType.Polygon;
+        IsPolygon = feature.Type == GeometryType.Polygon;
         var naturalKey = feature.Properties.FirstOrDefault(x => x.Key == "natural").Value;
         Type = GeoFeatureType.Unknown;
         if (naturalKey != null)
         {
             if (naturalKey == "fell" ||
-               naturalKey == "grassland" ||
-               naturalKey == "heath" ||
-               naturalKey == "moor" ||
-               naturalKey == "scrub" ||
-               naturalKey == "wetland")
-            {
+                naturalKey == "grassland" ||
+                naturalKey == "heath" ||
+                naturalKey == "moor" ||
+                naturalKey == "scrub" ||
+                naturalKey == "wetland")
                 Type = GeoFeatureType.Plain;
-            }
             else if (naturalKey == "wood" ||
                      naturalKey == "tree_row")
-            {
                 Type = GeoFeatureType.Forest;
-            }
             else if (naturalKey == "bare_rock" ||
                      naturalKey == "rock" ||
                      naturalKey == "scree")
-            {
                 Type = GeoFeatureType.Mountains;
-            }
             else if (naturalKey == "beach" ||
                      naturalKey == "sand")
-            {
                 Type = GeoFeatureType.Desert;
-            }
-            else if (naturalKey == "water")
-            {
-                Type = GeoFeatureType.Water;
-            }
-
+            else if (naturalKey == "water") Type = GeoFeatureType.Water;
         }
+
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 }
 
@@ -156,6 +145,7 @@ public struct Railway : BaseShape
     public int ZIndex { get; set; } = 45;
     public bool IsPolygon { get; set; }
     public PointF[] ScreenCoordinates { get; set; }
+
     public void Render(IImageProcessingContext context)
     {
         var penA = new Pen(Color.DarkGray, 2.0f);
@@ -169,11 +159,11 @@ public struct Railway : BaseShape
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 }
+
 public struct PopulatedPlace : BaseShape
 {
     public int ZIndex { get; set; } = 60;
@@ -193,9 +183,8 @@ public struct PopulatedPlace : BaseShape
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
         var name = feature.Properties.FirstOrDefault(x => x.Key == "name").Value;
 
         if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(feature.Label))
@@ -213,17 +202,12 @@ public struct PopulatedPlace : BaseShape
     public static bool ShouldBePopulatedPlace(MapFeature feature)
     {
         // https://wiki.openstreetmap.org/wiki/Key:place
-        if (feature.Type != MapFeature.GeometryType.Point) return false;
+        if (feature.Type != GeometryType.Point) return false;
         foreach (var entry in feature.Properties)
-        {
             if (entry.Key.StartsWith("place"))
-            {
-                if (entry.Value.StartsWith("city") || entry.Value.StartsWith("town") || entry.Value.StartsWith("locality") || entry.Value.StartsWith("hamlet"))
-                {
+                if (entry.Value.StartsWith("city") || entry.Value.StartsWith("town") ||
+                    entry.Value.StartsWith("locality") || entry.Value.StartsWith("hamlet"))
                     return true;
-                }
-            }
-        }
         return false;
     }
 }
@@ -233,6 +217,7 @@ public struct Border : BaseShape
     public int ZIndex { get; set; } = 30;
     public bool IsPolygon { get; set; }
     public PointF[] ScreenCoordinates { get; set; }
+
     public void Render(IImageProcessingContext context)
     {
         var pen = new Pen(Color.Gray, 2.0f);
@@ -244,28 +229,22 @@ public struct Border : BaseShape
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 
     public static bool ShouldBeBorder(MapFeature feature)
     {
         // https://wiki.openstreetmap.org/wiki/Key:admin_level
-        bool foundBoundary = false;
-        bool foundLevel = false;
+        var foundBoundary = false;
+        var foundLevel = false;
         foreach (var entry in feature.Properties)
         {
-            if (entry.Key.StartsWith("boundary") && entry.Value.StartsWith("administrative"))
-            {
-                foundBoundary = true;
-            }
-            if (entry.Key.StartsWith("admin_level") && entry.Value == "2")
-            {
-                foundLevel = true;
-            }
+            if (entry.Key.StartsWith("boundary") && entry.Value.StartsWith("administrative")) foundBoundary = true;
+            if (entry.Key.StartsWith("admin_level") && entry.Value == "2") foundLevel = true;
             if (foundBoundary && foundLevel) break;
         }
+
         return foundBoundary && foundLevel;
     }
 }
@@ -294,9 +273,8 @@ public struct Waterway : BaseShape
         IsPolygon = isPolygon;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 }
 
@@ -322,9 +300,8 @@ public struct Road : BaseShape
         IsPolygon = isPolygon;
         ScreenCoordinates = new PointF[c.Length];
         for (var i = 0; i < c.Length; i++)
-        {
-            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude), (float)MercatorProjection.latToY(c[i].Latitude));
-        }
+            ScreenCoordinates[i] = new PointF((float)MercatorProjection.lonToX(c[i].Longitude),
+                (float)MercatorProjection.latToY(c[i].Latitude));
     }
 }
 
@@ -335,15 +312,14 @@ public interface BaseShape
     public PointF[] ScreenCoordinates { get; set; }
 
     public void Render(IImageProcessingContext context);
+
     public void TranslateAndScale(float minX, float minY, float scale, float height)
     {
         for (var i = 0; i < ScreenCoordinates.Length; i++)
         {
             var coord = ScreenCoordinates[i];
-            var newCoord = new PointF((coord.X + (minX * -1)) * scale, height - (coord.Y + (minY * -1)) * scale);
+            var newCoord = new PointF((coord.X + minX * -1) * scale, height - (coord.Y + minY * -1) * scale);
             ScreenCoordinates[i] = newCoord;
         }
     }
 }
-
-
