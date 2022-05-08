@@ -5,7 +5,7 @@ namespace Mapster.Service;
 
 public class Options
 {
-    [Option('i', "input", Required = true, HelpText = "Path to directory where map data is stored")]
+    [Option('i', "input", Required = true, HelpText = "Path to map data binary file")]
     public string? MapDataPath { get; set; }
 }
 
