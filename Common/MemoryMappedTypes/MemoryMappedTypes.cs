@@ -6,7 +6,7 @@ namespace Mapster.Common.MemoryMappedTypes;
 public struct FileHeader
 {
     [FieldOffset(0)] public long Version;
-    [FieldOffset(1)] public int TileCount;
+    [FieldOffset(8)] public int TileCount;
 }
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
@@ -126,5 +126,7 @@ public struct MapFeature
     [FieldOffset(8)] public int LabelOffset;
     [FieldOffset(12)] public GeometryType GeometryType;
     [FieldOffset(13)] public int CoordinateOffset;
-    [FieldOffset(14)] public int CoordinateCount;
+    [FieldOffset(17)] public int CoordinateCount;
+    [FieldOffset(21)] public int PropertiesOffset;
+    [FieldOffset(25)] public int PropertiesCount;
 }
