@@ -3,7 +3,6 @@ using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
-using MapFeature = Mapster.Common.MemoryMappedTypes.MapFeature;
 
 namespace Mapster.Rendering;
 
@@ -96,7 +95,7 @@ public struct GeoFeature : BaseShape
         }
     }
 
-    public GeoFeature(Coordinate[] c, GeoFeatureType type)
+    public GeoFeature(ReadOnlySpan<Coordinate> c, GeoFeatureType type)
     {
         IsPolygon = true;
         Type = type;
@@ -106,7 +105,7 @@ public struct GeoFeature : BaseShape
                 (float)MercatorProjection.latToY(c[i].Latitude));
     }
 
-    public GeoFeature(Coordinate[] c, MapFeature feature)
+    public GeoFeature(ReadOnlySpan<Coordinate> c, MapFeatureData feature)
     {
         IsPolygon = feature.Type == GeometryType.Polygon;
         var naturalKey = feature.Properties.FirstOrDefault(x => x.Key == "natural").Value;
@@ -119,18 +118,29 @@ public struct GeoFeature : BaseShape
                 naturalKey == "moor" ||
                 naturalKey == "scrub" ||
                 naturalKey == "wetland")
+            {
                 Type = GeoFeatureType.Plain;
+            }
             else if (naturalKey == "wood" ||
                      naturalKey == "tree_row")
+            {
                 Type = GeoFeatureType.Forest;
+            }
             else if (naturalKey == "bare_rock" ||
                      naturalKey == "rock" ||
                      naturalKey == "scree")
+            {
                 Type = GeoFeatureType.Mountains;
+            }
             else if (naturalKey == "beach" ||
                      naturalKey == "sand")
+            {
                 Type = GeoFeatureType.Desert;
-            else if (naturalKey == "water") Type = GeoFeatureType.Water;
+            }
+            else if (naturalKey == "water")
+            {
+                Type = GeoFeatureType.Water;
+            }
         }
 
         ScreenCoordinates = new PointF[c.Length];
@@ -149,12 +159,15 @@ public struct Railway : BaseShape
     public void Render(IImageProcessingContext context)
     {
         var penA = new Pen(Color.DarkGray, 2.0f);
-        var penB = new Pen(Color.LightGray, 1.2f, new float[] { 2.0f, 4.0f, 2.0f });
+        var penB = new Pen(Color.LightGray, 1.2f, new[]
+        {
+            2.0f, 4.0f, 2.0f
+        });
         context.DrawLines(penA, ScreenCoordinates);
         context.DrawLines(penB, ScreenCoordinates);
     }
 
-    public Railway(Coordinate[] c)
+    public Railway(ReadOnlySpan<Coordinate> c)
     {
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
@@ -174,11 +187,15 @@ public struct PopulatedPlace : BaseShape
 
     public void Render(IImageProcessingContext context)
     {
-        if (!ShouldRender) return;
-        context.DrawText(Name, SystemFonts.CreateFont("Arial", 12, FontStyle.Bold), Color.Black, ScreenCoordinates[0]);
+        if (!ShouldRender)
+        {
+            return;
+        }
+        var font = SystemFonts.Families.First().CreateFont(12, FontStyle.Bold);
+        context.DrawText(Name, font, Color.Black, ScreenCoordinates[0]);
     }
 
-    public PopulatedPlace(Coordinate[] c, MapFeature feature)
+    public PopulatedPlace(ReadOnlySpan<Coordinate> c, MapFeatureData feature)
     {
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
@@ -187,27 +204,34 @@ public struct PopulatedPlace : BaseShape
                 (float)MercatorProjection.latToY(c[i].Latitude));
         var name = feature.Properties.FirstOrDefault(x => x.Key == "name").Value;
 
-        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(feature.Label))
+        if (feature.Label.IsEmpty)
         {
             ShouldRender = false;
             Name = "Unknown";
         }
         else
         {
-            Name = string.IsNullOrWhiteSpace(name) ? feature.Label : name;
+            Name = string.IsNullOrWhiteSpace(name) ? feature.Label.ToString() : name;
             ShouldRender = true;
         }
     }
 
-    public static bool ShouldBePopulatedPlace(MapFeature feature)
+    public static bool ShouldBePopulatedPlace(MapFeatureData feature)
     {
         // https://wiki.openstreetmap.org/wiki/Key:place
-        if (feature.Type != GeometryType.Point) return false;
+        if (feature.Type != GeometryType.Point)
+        {
+            return false;
+        }
         foreach (var entry in feature.Properties)
             if (entry.Key.StartsWith("place"))
+            {
                 if (entry.Value.StartsWith("city") || entry.Value.StartsWith("town") ||
                     entry.Value.StartsWith("locality") || entry.Value.StartsWith("hamlet"))
+                {
                     return true;
+                }
+            }
         return false;
     }
 }
@@ -224,7 +248,7 @@ public struct Border : BaseShape
         context.DrawLines(pen, ScreenCoordinates);
     }
 
-    public Border(Coordinate[] c)
+    public Border(ReadOnlySpan<Coordinate> c)
     {
         IsPolygon = false;
         ScreenCoordinates = new PointF[c.Length];
@@ -233,16 +257,25 @@ public struct Border : BaseShape
                 (float)MercatorProjection.latToY(c[i].Latitude));
     }
 
-    public static bool ShouldBeBorder(MapFeature feature)
+    public static bool ShouldBeBorder(MapFeatureData feature)
     {
         // https://wiki.openstreetmap.org/wiki/Key:admin_level
         var foundBoundary = false;
         var foundLevel = false;
         foreach (var entry in feature.Properties)
         {
-            if (entry.Key.StartsWith("boundary") && entry.Value.StartsWith("administrative")) foundBoundary = true;
-            if (entry.Key.StartsWith("admin_level") && entry.Value == "2") foundLevel = true;
-            if (foundBoundary && foundLevel) break;
+            if (entry.Key.StartsWith("boundary") && entry.Value.StartsWith("administrative"))
+            {
+                foundBoundary = true;
+            }
+            if (entry.Key.StartsWith("admin_level") && entry.Value == "2")
+            {
+                foundLevel = true;
+            }
+            if (foundBoundary && foundLevel)
+            {
+                break;
+            }
         }
 
         return foundBoundary && foundLevel;
@@ -268,7 +301,7 @@ public struct Waterway : BaseShape
         }
     }
 
-    public Waterway(Coordinate[] c, bool isPolygon = false)
+    public Waterway(ReadOnlySpan<Coordinate> c, bool isPolygon = false)
     {
         IsPolygon = isPolygon;
         ScreenCoordinates = new PointF[c.Length];
@@ -295,7 +328,7 @@ public struct Road : BaseShape
         }
     }
 
-    public Road(Coordinate[] c, bool isPolygon = false)
+    public Road(ReadOnlySpan<Coordinate> c, bool isPolygon = false)
     {
         IsPolygon = isPolygon;
         ScreenCoordinates = new PointF[c.Length];
