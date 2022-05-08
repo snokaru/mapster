@@ -236,8 +236,8 @@ public static class Program
                 fileWriter.Write(featureData.GeometryType); // MapFeature: GeometryType
                 fileWriter.Write(featureData.Coordinates.offset); // MapFeature: CoordinateOffset
                 fileWriter.Write(featureData.Coordinates.coordinates.Count); // MapFeature: CoordinateCount
-                fileWriter.Write(featureData.PropertyKeys.offset); // MapFeature: PropertiesOffset 
-                fileWriter.Write(featureData.PropertyKeys.keys.Count); // MapFeature: PropertiesCount
+                fileWriter.Write(featureData.PropertyKeys.offset * 2); // MapFeature: PropertiesOffset 
+                fileWriter.Write(featureData.PropertyKeys.keys.Count); // MapFeature: PropertyCount
             }
 
             // Record the current position in the stream
@@ -303,13 +303,13 @@ public static class Program
                     ReadOnlySpan<char> k = featureData.PropertyKeys.keys[i];
                     foreach (var c in k)
                     {
-                        fileWriter.Write(c);
+                        fileWriter.Write((short)c);
                     }
 
                     ReadOnlySpan<char> v = featureData.PropertyValues.values[i];
                     foreach (var c in v)
                     {
-                        fileWriter.Write(c);
+                        fileWriter.Write((short)c);
                     }
                 }
             }
