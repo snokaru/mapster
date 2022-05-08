@@ -18,8 +18,4 @@
       <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="MapFeatureExtensions.cs" />
-    </ItemGroup>
-
 </Project>

@@ -16,7 +16,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
-        Model.Data = "Add Item";
+        Model.Data = "Render";
     }
 
     // Model used for the button text
