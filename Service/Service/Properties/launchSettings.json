@@ -2,7 +2,7 @@
   "profiles": {
     "Service": {
       "commandName": "Project",
-      "commandLineArgs": "--input \"../../Tests/TestTileRenderer/MapData\"",
+      "commandLineArgs": "--input \"../../Tests/TestTileRenderer/MapData/andorra-10032022.bin\"",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
