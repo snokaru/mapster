@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <Compile Remove="MapFeatureExtensions.cs" />
-      <None Include="MapFeatureExtensions.cs" />
     </ItemGroup>
 
 </Project>
