@@ -230,7 +230,7 @@ public class PropertyManager {
       }
       else if (entry.Key.StartsWith("landuse")) 
       {
-          string key = BoundaryMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
+          string key = LanduseMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
           LanduseMapping.TryGetValue(key, out landuse);
       }
       else if (entry.Key.StartsWith("building")) 
@@ -240,25 +240,25 @@ public class PropertyManager {
       }
       else if (entry.Key.StartsWith("leisure")) 
       {
-          string key = BuildingMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
+          string key = LeisureMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
           LeisureMapping.TryGetValue(key, out leisure);
       }
       else if (entry.Key.StartsWith("amenity")) 
       {
-          string key = BuildingMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
+          string key = AmenityMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
           AmenityMapping.TryGetValue(key, out amenity);
       }
       else if (entry.Key == "admin_level") 
       {
-          string key = BuildingMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
+          string key = AdminLevelMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
           AdminLevelMapping.TryGetValue(key, out adminLevel);
       }
       else if (entry.Key.StartsWith("place")) 
       {
-          string key = BoundaryMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
+          string key = PlaceMapping.Keys.Where(k => entry.Value.StartsWith(k)).FirstOrDefault("");
           PlaceMapping.TryGetValue(key, out place);
       }
-      else if (entry.Key == "name") 
+      else if (entry.Key.StartsWith("name")) 
       {
           name = entry.Value;
       }
