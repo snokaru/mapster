@@ -36,47 +36,38 @@ public static class TileRenderer
         }
         else if (GeoFeature.isNatural(feature))
         {
-            Console.WriteLine("natural...");
             baseShape = new GeoFeature(coordinates, feature);
         }
         else if (GeoFeature.isForest(feature))
         {
-            Console.WriteLine("forest...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Forest);
         }
         else if (GeoFeature.isLanduseForestOrOrchad(feature))
         {
-            Console.WriteLine("landuse forest or orchad...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Forest);
         }
         else if (GeoFeature.isLanduseResidential(feature))
         {
-            Console.WriteLine("residential...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);
         }
         else if (GeoFeature.isLandusePlain(feature))
         {
-            Console.WriteLine("plain...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Plain);
         }
         else if (GeoFeature.isWater(feature))
         {
-            Console.WriteLine("water...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Water);
         }
         else if (GeoFeature.isBuilding(feature))
         {
-            Console.WriteLine("residential...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);
         }
         else if (GeoFeature.isLeisure(feature))
         {
-            Console.WriteLine("leisure...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);
         }
         else if (GeoFeature.isAmenity(feature))
         {
-            Console.WriteLine("amenity...");
             baseShape = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);
         }
 
