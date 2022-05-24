@@ -147,6 +147,11 @@ public static class TileRenderer
         while (shapes.Count > 0)
         {
             var entry = shapes.Dequeue();
+            // FIXME: Hack
+            if (entry.ScreenCoordinates.Length < 2)
+            {
+                continue;
+            }
             entry.TranslateAndScale(boundingBox.MinX, boundingBox.MinY, scale, canvas.Height);
             canvas.Mutate(x => entry.Render(x));
         }
